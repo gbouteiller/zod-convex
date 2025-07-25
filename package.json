@@ -1,0 +1,57 @@
+{
+	"name": "zod-convex",
+	"version": "1.0.0",
+	"description": "",
+	"author": {
+		"email": "gregory.bouteiller@niama.re",
+		"name": "Gregory Bouteiller",
+		"url": "https://github.com/gbouteiller"
+	},
+	"license": "MIT",
+	"keywords": [
+		"zod",
+		"convex"
+	],
+	"homepage": "https://github.com/gbouteiller/zod-convex",
+	"type": "module",
+	"sideEffects": false,
+	"zshy": "./index.ts",
+	"scripts": {
+		"build": "zshy",
+		"changeset": "changeset",
+		"release": "node scripts/release.mjs",
+		"test": "pnpm vitest",
+		"test:once": "pnpm vitest run",
+		"test:debug": "pnpm vitest --inspect-brk --no-file-parallelism",
+		"test:coverage": "pnpm vitest run --coverage --coverage.reporter=text"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.1.2",
+		"@edge-runtime/vm": "^5.0.0",
+		"@types/node": "^24.1.0",
+		"convex": "^1.25.4",
+		"convex-test": "^0.0.38",
+		"type-fest": "^4.41.0",
+		"vite": "^7.0.6",
+		"vitest": "^3.2.4",
+		"zod": "^4.0.9",
+		"zshy": "^0.2.5"
+	},
+	"peerDependencies": {
+		"convex": "^1.25.4",
+		"zod": "^4.0.5"
+	},
+	"files": [
+		"dist"
+	],
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.cts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.cts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		}
+	}
+}

@@ -1,0 +1,5 @@
+node_modules
+convex
+dist
+.env.local
+.vscode
