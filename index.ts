@@ -214,8 +214,12 @@ export type ConvexFromType<Z extends z.$ZodType> = Z extends ZodConvexID<infer _
 																								never;
 
 export type ConvexObjectFromShape<S extends z.$ZodShape> = VObject<
-	{ [key in keyof S]: z.infer<S[key]> },
-	{ [key in keyof S]: ConvexFromType<S[key]> },
+	{ [K in keyof S]: z.infer<S[K]> },
+	{ [K in keyof S]: ConvexFromType<S[K]> },
 	"required",
-	IsEmptyObject<S> extends true ? never : any
+	IsEmptyObject<S> extends true
+		? never
+		: { [K in keyof S]: JoinFieldPaths<K & string, ConvexFromType<S[K]>["fieldPaths"]> | K }[keyof S] & string
 >;
+
+export type JoinFieldPaths<S extends string, E extends string> = `${S}.${E}`;
