@@ -17,7 +17,7 @@ import {
 	type VUnion,
 	v,
 } from "convex/values";
-import type { IsEmptyObject, UnionToTuple, ValueOf, Writable } from "type-fest";
+import type { IsEmptyObject, PartialOnUndefinedDeep, UnionToTuple, ValueOf, Writable } from "type-fest";
 import type { IsUnion } from "type-fest/source/internal";
 import * as z from "zod/v4/core";
 
@@ -214,7 +214,7 @@ export type ConvexFromType<Z extends z.$ZodType> = Z extends ZodConvexID<infer _
 																								never;
 
 export type ConvexObjectFromShape<S extends z.$ZodShape> = VObject<
-	{ [K in keyof S]: z.infer<S[K]> },
+	PartialOnUndefinedDeep<{ [K in keyof S]: z.infer<S[K]> }>,
 	{ [K in keyof S]: ConvexFromType<S[K]> },
 	"required",
 	IsEmptyObject<S> extends true
