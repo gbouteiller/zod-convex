@@ -1,5 +1,11 @@
 # zod-convex
 
+## 0.2.0
+
+### Minor Changes
+
+- 30ef92e: fix keyof
+
 ## 0.1.0
 
 ### Minor Changes

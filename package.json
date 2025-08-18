@@ -1,6 +1,6 @@
 {
 	"name": "zod-convex",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "zod tooling for convex",
 	"author": {
 		"email": "gregory.bouteiller@niama.re",
