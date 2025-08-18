@@ -116,102 +116,82 @@ export type ConvexFrom<T extends z.$ZodType | z.$ZodShape> = T extends z.$ZodSha
 		? ConvexFromType<T>
 		: never;
 
-export type ConvexFromDefault<T> = T extends z.$ZodOptional<infer U> ? ConvexFromSomeType<U> : ConvexFromSomeType<T>;
-
 export type ConvexFromEnum<E extends unknown[]> = E extends string[]
 	? VUnion<E[number], { [Index in keyof E]: VLiteral<E[Index]> }>
 	: never;
 
 export type ConvexFromLiteral<L> = IsUnion<L> extends true ? ConvexFromLiterals<UnionToTuple<L>> : VLiteral<L>;
 export type ConvexFromLiterals<L extends unknown[]> = VUnion<L[number], { [K in keyof L]: VLiteral<L[K]> }>;
-export type ConvexFromNonOptional<T> = T extends z.$ZodOptional<infer U> ? ConvexFromSomeType<U> : ConvexFromSomeType<T>;
-export type ConvexFromOptional<T> = T extends z.$ZodType ? VOptional<ConvexFromType<T>> : never;
+export type ConvexFromNonOptional<T extends z.$ZodType> = T extends z.$ZodOptional<infer U extends z.$ZodType>
+	? ConvexFromType<U>
+	: ConvexFromType<T>;
 
-export type ConvexFromNullable<T> = T extends z.$ZodOptional<infer U>
-	? VOptional<VUnion<null | z.infer<U>, [ConvexFromSomeType<U>, VNull]>>
-	: VUnion<null | z.infer<T>, [ConvexFromSomeType<T>, VNull]>;
+export type ConvexFromNullable<T extends z.$ZodType> = T extends z.$ZodOptional<infer U extends z.$ZodType>
+	? VOptional<VUnion<null | z.infer<U>, [ConvexFromType<U>, VNull]>>
+	: VUnion<null | z.infer<T>, [ConvexFromType<T>, VNull]>;
 
 export type ConvexFromRecord<K extends z.$ZodRecordKey, V extends z.$ZodType> = K extends z.$ZodString | z.$ZodSymbol
 	? VRecord<Record<ConvexFromType<K>["type"], ConvexFromType<V>["type"]>, ConvexFromType<K>, ConvexFromType<V>>
 	: never;
 
-export type ConvexFromSomeType<T> = T extends z.$ZodType ? ConvexFromType<T> : never;
-
-export type ConvexFromUnionContent<T extends z.SomeType[]> = T extends z.$ZodType[]
-	? VUnion<
-			ConvexFromType<T[number]>["type"],
-			{
-				[Index in keyof T]: T[Index] extends z.$ZodType ? ConvexFromType<T[Index]> : never;
-			},
-			"required",
-			ConvexFromType<T[number]>["fieldPaths"]
-		>
-	: never;
+export type ConvexFromUnionContent<T extends z.$ZodType[]> = VUnion<
+	ConvexFromType<T[number]>["type"],
+	{
+		[Index in keyof T]: T[Index] extends z.$ZodType ? ConvexFromType<T[Index]> : never;
+	},
+	"required",
+	ConvexFromType<T[number]>["fieldPaths"]
+>;
 
 export type ConvexFromType<Z extends z.$ZodType> = Z extends ZodConvexID<infer _D, infer T>
 	? VId<T>
-	: Z extends z.$ZodAny | z.$ZodUnknown // ZodAny, ZodUnknown
+	: Z extends z.$ZodAny | z.$ZodUnknown
 		? VAny
-		: Z extends z.$ZodBoolean // ZodBoolean
+		: Z extends z.$ZodBoolean
 			? VBoolean
-			: Z extends z.$ZodBigInt // ZodBigInt
+			: Z extends z.$ZodBigInt
 				? VInt64
-				: Z extends z.$ZodNull // ZodNull
+				: Z extends z.$ZodNull
 					? VNull
-					: Z extends z.$ZodNumber | z.$ZodNaN // ZodNumber, ZodNaN
+					: Z extends z.$ZodNumber | z.$ZodNaN
 						? VFloat64
-						: Z extends z.$ZodString | z.$ZodTemplateLiteral // ZodString, ZodTemplateLiteral
+						: Z extends z.$ZodString | z.$ZodTemplateLiteral
 							? VString
-							: Z extends z.$ZodLiteral<infer L> // ZodLiteral
+							: Z extends z.$ZodLiteral<infer L>
 								? IsUnion<L> extends true
 									? ConvexFromLiterals<UnionToTuple<L>>
 									: VLiteral<L>
-								: Z extends z.$ZodCatch<infer T> // ZodCatch
-									? ConvexFromSomeType<T>
-									: Z extends z.$ZodLazy<infer T> // ZodLazy
-										? ConvexFromSomeType<T>
-										: Z extends z.$ZodNonOptional<infer T> // ZodNonOptional
+								: Z extends z.$ZodCatch<infer T extends z.$ZodType>
+									? ConvexFromType<T>
+									: Z extends z.$ZodLazy<infer T extends z.$ZodType>
+										? ConvexFromType<T>
+										: Z extends z.$ZodNonOptional<infer T extends z.$ZodType>
 											? ConvexFromNonOptional<T>
-											: Z extends z.$ZodNullable<infer T> // ZodNullable
+											: Z extends z.$ZodNullable<infer T extends z.$ZodType>
 												? ConvexFromNullable<T>
-												: Z extends z.$ZodPrefault<infer T> // ZodPrefault
-													? ConvexFromDefault<T>
-													: Z extends z.$ZodReadonly<infer T> // ZodReadonly
-														? ConvexFromSomeType<T>
-														: Z extends z.$ZodOptional<infer T> // ZodOptional
-															? ConvexFromOptional<T>
-															: Z extends z.$ZodDefault<infer T> // ZodDefault
-																? ConvexFromDefault<T>
-																: Z extends z.$ZodEnum<infer E> // ZodEnum
+												: Z extends z.$ZodPrefault<infer T extends z.$ZodType>
+													? ConvexFromNonOptional<T>
+													: Z extends z.$ZodReadonly<infer T extends z.$ZodType>
+														? ConvexFromType<T>
+														: Z extends z.$ZodOptional<infer T extends z.$ZodType>
+															? VOptional<ConvexFromType<T>>
+															: Z extends z.$ZodDefault<infer T extends z.$ZodType>
+																? ConvexFromNonOptional<T>
+																: Z extends z.$ZodEnum<infer E>
 																	? ConvexFromEnum<UnionToTuple<ValueOf<E>>>
-																	: Z extends z.$ZodArray<infer E> // ZodArray
-																		? E extends z.$ZodType
-																			? VArray<ConvexFromType<E>["type"][], ConvexFromType<E>>
-																			: never
-																		: Z extends z.$ZodPipe<infer _I, infer O> // ZodPipe
-																			? ConvexFromSomeType<O>
-																			: Z extends z.$ZodTuple<infer E> // ZodTuple
-																				? E extends z.$ZodType[]
-																					? VArray<ConvexFromType<E[number]>["type"][], ConvexFromUnionContent<E>>
-																					: never
-																				: Z extends z.$ZodObject<infer S> // ZodObject
+																	: Z extends z.$ZodArray<infer E extends z.$ZodType>
+																		? VArray<ConvexFromType<E>["type"][], ConvexFromType<E>>
+																		: Z extends z.$ZodPipe<infer _I, infer O extends z.$ZodType>
+																			? ConvexFromType<O>
+																			: Z extends z.$ZodTuple<infer E extends z.$ZodType[]>
+																				? VArray<ConvexFromType<E[number]>["type"][], ConvexFromUnionContent<E>>
+																				: Z extends z.$ZodObject<infer S>
 																					? ConvexObjectFromShape<S>
-																					: Z extends z.$ZodUnion<infer T> // ZodUnion
+																					: Z extends z.$ZodUnion<infer T extends z.$ZodType[]>
 																						? ConvexFromUnionContent<Writable<T>>
-																						: Z extends z.$ZodRecord<infer K extends z.$ZodRecordKey, infer V extends z.$ZodType> // ZodRecord
+																						: Z extends z.$ZodRecord<infer K extends z.$ZodRecordKey, infer V extends z.$ZodType>
 																							? ConvexFromRecord<K, V>
-																							: // ZodCatch
-																								// ZodDate
-																								// ZodFunction
-																								// ZodIntersection
-																								// ZodMap
-																								// ZodNever
-																								// ZodPromise
-																								// ZodSet
-																								// ZodSymbol
-																								// ZodUndefined
-																								// ZodVoid
-																								never;
+																							: never;
 
 export type ConvexObjectFromShape<S extends z.$ZodShape> = VObject<
 	PartialOnUndefinedDeep<{ [K in keyof S]: z.infer<S[K]> }>,
