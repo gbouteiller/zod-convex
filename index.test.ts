@@ -247,8 +247,8 @@ test("wrappers", () => {
 	expectTypeOf(convexFrom(z.boolean().optional().prefault(false))).toEqualTypeOf<VBoolean>();
 	expect(convexFrom(z.boolean().optional().prefault(false))).toStrictEqual(v.boolean());
 	// preprocess
-	expectTypeOf(convexFrom(z.preprocess((v) => (typeof v === "string" ? Number.parseInt(v) : v), z.int()))).toEqualTypeOf<VFloat64>();
-	expect(convexFrom(z.preprocess((v) => (typeof v === "string" ? Number.parseInt(v) : v), z.int()))).toStrictEqual(v.float64());
+	expectTypeOf(convexFrom(z.preprocess((v) => (typeof v === "string" ? Number.parseInt(v, 10) : v), z.int()))).toEqualTypeOf<VFloat64>();
+	expect(convexFrom(z.preprocess((v) => (typeof v === "string" ? Number.parseInt(v, 10) : v), z.int()))).toStrictEqual(v.float64());
 	// pipe
 	expectTypeOf(convexFrom(z.pipe(z.string(), z.stringbool()))).toEqualTypeOf<VBoolean>();
 	expect(convexFrom(z.pipe(z.string(), z.stringbool()))).toStrictEqual(v.boolean());
@@ -264,8 +264,8 @@ test("utilities", () => {
 });
 
 test("z.keyof", () => {
-	expectTypeOf(convexFrom(z.keyof(z.object({ a: z.string() })))).toEqualTypeOf<VLiteral<"a">>();
-	expect(convexFrom(z.keyof(z.object({ a: z.string() })))).toStrictEqual(v.literal("a"));
+	expectTypeOf(convexFrom(z.keyof(z.object({ a: z.string() })))).toEqualTypeOf<VUnion<"a", [VLiteral<"a">]>>();
+	expect(convexFrom(z.keyof(z.object({ a: z.string() })))).toStrictEqual(v.union(v.literal("a")));
 	expectTypeOf(convexFrom(z.keyof(z.object({ a: z.string(), b: z.boolean() })))).toEqualTypeOf<
 		VUnion<"a" | "b", [VLiteral<"a">, VLiteral<"b">]>
 	>();
