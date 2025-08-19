@@ -1,5 +1,11 @@
 # zod-convex
 
+## 0.2.3
+
+### Patch Changes
+
+- add simple types
+
 ## 0.2.2
 
 ### Patch Changes
