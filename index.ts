@@ -28,6 +28,9 @@ export function zid<D extends GDM = GDM, T extends TN<D> = TN<D>>(tableName: T):
 
 // TRANSFORMERS ****************************************************************************************************************************
 export const convexArgsFrom = <T extends ZArgs>(zod: T) => convexFrom(zod);
+
+export const convexTableFrom = <T extends ZTable>(zod: T) => convexFrom(zod);
+
 export const convexFrom = <T extends ZReturns>(zod: T) =>
 	(zod instanceof z.$ZodType ? convexFromType(zod) : convexObjectFromShape(zod)) as ConvexFrom<T>;
 
@@ -109,6 +112,7 @@ export interface ZodConvexID<D extends GDM = GDM, T extends TN<D> = TN<D>> exten
 
 export type ZArgs = z.$ZodType | z.$ZodObject | z.$ZodAny | z.$ZodUnknown | z.$ZodShape;
 export type ZReturns = z.$ZodType | z.$ZodShape;
+export type ZTable = z.$ZodObject | z.$ZodShape;
 
 export type ConvexFrom<T extends z.$ZodType | z.$ZodShape> = T extends z.$ZodShape
 	? ConvexObjectFromShape<T>

@@ -1,5 +1,12 @@
 # zod-convex
 
+## 0.2.2
+
+### Patch Changes
+
+- pass type-fest as a dependency
+- add convexTableFrom
+
 ## 0.2.1
 
 ### Patch Changes

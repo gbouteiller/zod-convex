@@ -1,6 +1,6 @@
 {
 	"name": "zod-convex",
-	"version": "0.2.1",
+	"version": "0.2.2",
 	"description": "zod tooling for convex",
 	"author": {
 		"email": "gregory.bouteiller@niama.re",
@@ -28,6 +28,9 @@
 		"test:debug": "pnpm vitest --inspect-brk --no-file-parallelism",
 		"test:coverage": "pnpm vitest run --coverage --coverage.reporter=text"
 	},
+	"dependencies": {
+		"type-fest": "^4.41.0"
+	},
 	"devDependencies": {
 		"@biomejs/biome": "2.2.0",
 		"@changesets/cli": "^2.29.6",
@@ -35,7 +38,6 @@
 		"@types/node": "^24.3.0",
 		"convex": "^1.25.4",
 		"convex-test": "^0.0.38",
-		"type-fest": "^4.41.0",
 		"vite": "^7.1.2",
 		"vitest": "^3.2.4",
 		"zod": "^4.0.17",
